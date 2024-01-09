@@ -1,0 +1,172 @@
+<!-- https://web.dev/drag-and-drop/ -->
+<!DOCTYPE html>
+<html lane="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="expires" content="3600" />
+
+  <style>
+    body {
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+
+    .app {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .box {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      top: 0;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      transition: transform 1s ease-in-out;
+    }
+
+    .item {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: gray;
+      font-size: 40rem;
+    }
+
+    .header {
+      width: 100%;
+      height: 20%;
+      position: fixed;
+      top: 0;
+      background-color: #fff;
+    }
+
+    .footer {
+      width: 100%;
+      height: 20%;
+      position: fixed;
+      bottom: 0;
+      background-color: #fff;
+    }
+
+    .item>span {
+      font-size: 10rem;
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      font-weight: bolder;
+      color: #dddddd;
+    }
+
+    .img {
+      width: 100vw;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+    <div class="container">
+      <div class="box">
+        <div class="item">
+          <span>오늘 뭐<br />먹지?</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <script type="text/javascript">
+    const box = document.querySelector(".box");
+    let data = [
+      "1.png",
+      "2.png",
+      "3.png",
+      "4.png",
+      "5.png",
+      "6.png",
+      "7.png",
+      "8.png",
+      "9.png",
+      "10.png"
+    ];
+    const itemHeight = document.body.clientHeight;
+
+    // Initialize start button
+    box.addEventListener("click", roll);
+
+    function init() {
+      box.style.transitionDuration = `0s`;
+      box.style.transform = `translateY(-${itemHeight * (data.length - 1)}px)`;
+
+      box.innerHTML = "";
+
+      let shuffled = shuffle(data.concat(data));
+
+      shuffled.forEach(val => {
+        const itemElement = document.createElement("div");
+        itemElement.className = "item";
+        const imgElement = document.createElement("img");
+        imgElement.className = "img";
+        imgElement.src = val;
+        itemElement.append(imgElement);
+        box.append(itemElement);
+      });
+
+      // Initialize transition events
+      box.addEventListener("transitionstart", function() {
+        document.querySelectorAll('.item').forEach((item, index) => (item.style.filter = 'blur(1px)'));
+        box.removeEventListener("click", roll);
+      }, {
+        once: true
+      });
+      box.addEventListener("transitionend", function() {
+        document.querySelectorAll('.item').forEach((item, index) => (item.style.filter = 'blur(0)'));
+        box.addEventListener("click", roll);
+      }, {
+        once: true
+      });
+    }
+
+    function shuffle([...arr]) {
+      let m = arr.length;
+      while (m) {
+        const i = Math.floor(Math.random() * m--);
+        [arr[m], arr[i]] = [arr[i], arr[m]];
+      }
+      return arr;
+    }
+
+    function roll() {
+      init();
+
+      setTimeout(function() {
+        box.style.transitionDuration = `2s`;
+        box.style.transform = `translateY(0)`;
+      }, 100);
+    }
+  </script>
+</body>
+
+</html>
